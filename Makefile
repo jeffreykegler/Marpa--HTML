@@ -69,18 +69,5 @@ html_full_test:
 	(cd html/etc && PERL5LIB=$(CURDIR)/dxslib/lib/perl5:$$PERL5LIB make )
 	
 install:
-	(cd xs/libmarpa/dev && make)
-	(cd xs/libmarpa/dev && make install)
-	-mkdir xs/libmarpa/dist/m4
-	(cd xs/libmarpa/dist && autoreconf -ivf)
-	-mkdir xs/libmarpa/test/dev/m4
-	(cd xs/libmarpa/test/dev && autoreconf -ivf)
-	(cd pp && perl Build.PL)
-	(cd pp && ./Build code)
-	(cd xs && perl Build.PL)
-	(cd xs && ./Build code)
 	(cd html && perl Build.PL)
 	(cd html && ./Build code)
-	-mkdir xs/libmarpa/test/work
-	(cd xs/libmarpa/test/work && sh ../dev/configure)
-	(cd xs/libmarpa/test/work && make)
