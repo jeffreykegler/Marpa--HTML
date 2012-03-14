@@ -13,60 +13,25 @@
 # General Public License along with Marpa::XS.  If not, see
 # http://www.gnu.org/licenses/.
 
-.PHONY: libs dummy full pp_html_test xs_html_test pp_etc_make xs_etc_make \
-    pplib xslib libs
+.PHONY: dummy html_full_test full_test install
 
 dummy: 
 
-xs_basic_test:
-	(cd xs && ./Build test)
-
-xst: xs_basic_test xs_html_test
-
-libs: pplib xslib
-
-# PERL_MB_OPT unset to work around bug in Module::Build --
-# if install_base is specified twice it turns into an array
-# and the install breaks.
-# Anyway, it may be good practice to unset it.
-pplib:
-	-mkdir dpplib
-	-rm -rf dpplib/lib dpplib/man dpplib/html
-	(cd pp && PERL_MB_OPT= ./Build install --install_base ../dpplib)
-
-xslib:
-	-mkdir dxslib
-	-rm -rf dxslib/lib dxslib/man dxslib/html
-	(cd xs && PERL_MB_OPT= ./Build install --install_base ../dxslib)
-
-html_blib:
-	(cd html && ./Build code)
-
-pp_html_test: html_blib pplib
-	(cd html && \
-	PERL5LIB=$(CURDIR)/noxs/lib:$(CURDIR)/dpplib/lib/perl5:$$PERL5LIB prove -Ilib t )
-
-xs_html_test: html_blib xslib
-	(cd html && \
-	PERL5LIB=$(CURDIR)/dxslib/lib/perl5:$$PERL5LIB prove -Ilib t )
-
-
-pp_etc_make:
-	(cd pp/etc && make)
-
-xs_etc_make:
-	(cd xs/etc && make)
-
-pp_full_test: pplib pp_etc_make pp_html_test
-
-xs_full_test: xslib xs_etc_make xs_html_test
-
-full_test: pp_full_test  xs_full_test
+full_test: html_full_test
 
 html_full_test:
-	(cd html/etc && \
-	    PERL5LIB=$(CURDIR)/noxs/lib:$(CURDIR)/dpplib/lib/perl5:$$PERL5LIB make )
-	(cd html/etc && PERL5LIB=$(CURDIR)/dxslib/lib/perl5:$$PERL5LIB make )
+	cd html && perl Build.PL
+	cd html && ./Build realclean
+	cd html && perl Build.PL
+	cd html && ./Build
+	cd html && ./Build distmeta
+	curdir=$(CURDIR); \
+	echo PERL5LIB=$$curdir/noxs/lib:$$PERL5LIB; \
+	cd html; \
+	    PERL5LIB=$$curdir/noxs/lib:$$PERL5LIB prove t
+	cd html && ./Build test
+	cd html && ./Build distcheck
+	cd html && ./Build dist
 	
 install:
 	(cd html && perl Build.PL)
