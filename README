@@ -1,7 +1,2 @@
-THIS REPOSITORY IS GOING AWAY.
-
-This was the combined repository for the CPAN Marpa::XS, Marpa::PP
-and Marpa::HTML distributions.  The Marpa::XS and Marpa::PP
-distributions now have their own, separate repositories, and the
-CPAN Marpa::HTML distribution soon will.  At that point this
-repository will be deleted.
+This is the repository for the CPAN Marpa::HTML distribution.  The
+distribution directory is the html/ directory.
